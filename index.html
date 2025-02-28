@@ -154,6 +154,13 @@
           cool_alert.style.color = "red";
           return;
         }
+        if (isNaN(iban)) {
+          alert_title.textContent = "خطأ!";
+          alert_message.textContent = "الرجاء ادخال رقم الحساب بشكل صحيح";
+          cool_alert.style.transform = "translate(-50%, -50%)";
+          cool_alert.style.color = "red";
+          return;
+        }
         const bank = document.querySelector("select").value;
         let result;
         switch (bank) {
