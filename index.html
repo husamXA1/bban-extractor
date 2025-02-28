@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Manrope:wght@800&display=swap"
+      rel="stylesheet"
+    />
+    <title>BBAN</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Amiri";
+      }
+      body {
+        background-color: #ddb080;
+      }
+      .container {
+        margin: 50vh auto;
+        transform: translateY(-50%);
+        width: 90%;
+        max-width: 500px;
+        background-color: #fff;
+        padding: 2em;
+        border-radius: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1em;
+        border: 2px solid black;
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, 1);
+      }
+      h1 {
+        color: #ddb080;
+        text-shadow: 1px 1px 0 black;
+      }
+      input {
+        width: 100%;
+        padding: 0.5em;
+        border-radius: 0.5em;
+        border: 2px solid black;
+        outline: none;
+        font-size: 1.2em;
+        text-align: center;
+      }
+      select {
+        width: 100%;
+        padding: 0.5em;
+        border-radius: 0.5em;
+        border: 2px solid black;
+        outline: none;
+        font-size: 1.2em;
+        text-align: center;
+      }
+      button {
+        background: #ddb080;
+        outline: none;
+        border: 2px solid black;
+        padding: 0.5em 3em;
+        border-radius: 1em;
+        font-weight: bold;
+        box-shadow: 3px 3px 0 black;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #f0cfa0;
+      }
+      button:active {
+        transform: translate(3px, 3px);
+        box-shadow: none;
+      }
+      #cool_alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        max-width: 400px;
+        transform: translate(-50%, -100vh);
+        transition: 0.3s;
+        padding: 1em;
+        border: 2px solid black;
+        border-radius: 1em;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1em;
+      }
+      #cool_alert button {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body dir="rtl">
+    <div class="container">
+      <h1>مستخرج رقم BBAN</h1>
+      <input
+        type="text"
+        name="iban"
+        id="iban"
+        placeholder="ادخل رقم حسابك هنا..."
+        required
+      />
+      <select>
+        <option value="bok">بنك الخرطوم | بنكك</option>
+        <option value="faisal">بنك فيصل الاسلامي | فوري</option>
+        <option value="onb">بنك أمدرمان | أوكاش</option>
+      </select>
+      <button id="extract">استخراج</button>
+    </div>
+    <div id="cool_alert" class="cool-alert">
+      <h2 id="alert_title"></h2>
+      <p id="alert_message"></p>
+      <div style="display: flex; gap: 1em">
+        <button id="copy" style="display: none">نسخ</button>
+        <button id="alert_exit">حسناً</button>
+      </div>
+    </div>
+    <script>
+      const extract = document.getElementById("extract");
+      const alert_title = document.getElementById("alert_title");
+      const alert_message = document.getElementById("alert_message");
+      const cool_alert = document.querySelector(".cool-alert");
+      const alert_exit = document.getElementById("alert_exit");
+      const copy = document.getElementById("copy");
+      copy.addEventListener("click", () => {
+        const text = alert_message.textContent;
+        navigator.clipboard.writeText(text.split(" ").at(-1));
+        alert_title.textContent = "تم!";
+        alert_message.textContent = "تم نسخ رقم الحساب بنجاح";
+        cool_alert.style.transform = "translate(-50%, -50%)";
+        cool_alert.style.color = "green";
+        copy.style.display = "none";
+      });
+      alert_exit.addEventListener("click", () => {
+        cool_alert.style.transform = "translate(-50%, -100vh)";
+        extract.toggleAttribute("disabled");
+      });
+      extract.addEventListener("click", () => {
+        extract.toggleAttribute("disabled");
+        const iban = document.getElementById("iban").value;
+        if (!iban) {
+          alert_title.textContent = "خطأ!";
+          alert_message.textContent = "الرجاء ادخال رقم الحساب";
+          cool_alert.style.transform = "translate(-50%, -50%)";
+          cool_alert.style.color = "red";
+          return;
+        }
+        const bank = document.querySelector("select").value;
+        let result;
+        switch (bank) {
+          case "bok":
+            result = `040${iban}0001`;
+            break;
+          case "faisal":
+            result = `02${iban}0001`;
+            break;
+          case "onb":
+            result = `24${iban}00001`;
+            break;
+        }
+        alert_title.textContent = "تم!";
+        alert_message.textContent = `رقم الBBAN هو: ${result}`;
+        cool_alert.style.transform = "translate(-50%, -50%)";
+        cool_alert.style.color = "green";
+        copy.style.display = "block";
+      });
+    </script>
+  </body>
+</html>
